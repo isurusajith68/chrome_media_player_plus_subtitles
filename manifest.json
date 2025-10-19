@@ -3,7 +3,7 @@
   "name": "Video Player with Subtitle Fullscreen",
   "version": "1.0",
   "description": "Enhance video players with subtitle support in fullscreen mode",
-  "permissions": ["activeTab", "scripting"],
+  "permissions": ["activeTab", "scripting", "storage"],
   "background": {
     "service_worker": "background.js"
   },

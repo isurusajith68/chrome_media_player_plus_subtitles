@@ -2,17 +2,22 @@
 :root {
   --subtitle-size: 100%;
   --subtitle-bottom: 10%;
+  --subtitle-align: center; /* left | center | right */
+  --subtitle-color: #ffffff;
+  --subtitle-bg: rgba(0, 0, 0, 0.8);
+  --subtitle-shadow: 2px 2px 4px rgba(0, 0, 0, 0.9);
 }
 
 /* Enhanced subtitle styling in fullscreen */
 .video-fullscreen-mode video::cue {
   font-size: calc(2.5vw * var(--subtitle-size) / 100) !important;
-  background-color: rgba(0, 0, 0, 0.8) !important;
-  color: white !important;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.9) !important;
+  background-color: var(--subtitle-bg) !important;
+  color: var(--subtitle-color) !important;
+  text-shadow: var(--subtitle-shadow) !important;
   line-height: 1.4 !important;
   padding: 0.5em 1em !important;
   border-radius: 4px !important;
+  text-align: var(--subtitle-align) !important;
 }
 
 /* Position subtitles */
@@ -27,11 +32,12 @@
 }
 
 .video-fullscreen-mode video::-webkit-media-text-track-display {
-  background-color: rgba(0, 0, 0, 0.8) !important;
-  color: white !important;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.9) !important;
+  background-color: var(--subtitle-bg) !important;
+  color: var(--subtitle-color) !important;
+  text-shadow: var(--subtitle-shadow) !important;
   padding: 0.5em 1em !important;
   border-radius: 4px !important;
+  text-align: var(--subtitle-align) !important;
 }
 
 /* Notification style */
@@ -44,7 +50,7 @@
   color: white;
   padding: 12px 24px;
   border-radius: 8px;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   font-size: 16px;
   z-index: 999999;
   pointer-events: none;
@@ -78,9 +84,100 @@
 .video-fullscreen-mode .caption-window,
 .video-fullscreen-mode .captions-text {
   font-size: calc(2.5vw * var(--subtitle-size) / 100) !important;
-  background-color: rgba(0, 0, 0, 0.8) !important;
-  color: white !important;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.9) !important;
+  background-color: var(--subtitle-bg) !important;
+  color: var(--subtitle-color) !important;
+  text-shadow: var(--subtitle-shadow) !important;
   padding: 0.5em 1em !important;
   border-radius: 4px !important;
+  text-align: var(--subtitle-align) !important;
+}
+
+/* === Sidebar and toggle button === */
+#subtitle-sidebar-toggle {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 1000000;
+  background: #111827;
+  color: #e5e7eb;
+  border: 1px solid #374151;
+  border-radius: 999px;
+  padding: 8px 12px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+}
+
+#subtitle-sidebar-toggle:hover {
+  background: #1f2937;
+}
+
+#subtitle-sidebar {
+  position: fixed;
+  right: 16px;
+  bottom: 64px;
+  width: 280px;
+  max-width: calc(100vw - 32px);
+  background: #0b1220;
+  color: #e5e7eb;
+  border: 1px solid #1f2937;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  padding: 12px;
+  z-index: 1000000;
+}
+
+#subtitle-sidebar.hidden {
+  display: none !important;
+}
+
+#subtitle-sidebar .ss-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+#subtitle-sidebar .ss-header button {
+  background: transparent;
+  color: #9ca3af;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+#subtitle-sidebar label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+  color: #cbd5e1;
+  margin-bottom: 6px;
+}
+
+#subtitle-sidebar input[type="range"] {
+  width: 100%;
+}
+
+#subtitle-sidebar .ss-row {
+  margin-bottom: 12px;
+}
+
+#subtitle-sidebar .ss-align {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+#subtitle-sidebar .ss-align button {
+  border: 1px solid #374151;
+  background: #111827;
+  color: #e5e7eb;
+  border-radius: 8px;
+  padding: 6px 0;
+  cursor: pointer;
+}
+#subtitle-sidebar .ss-align button.active,
+#subtitle-sidebar .ss-align button:hover {
+  background: #1f2937;
 }
