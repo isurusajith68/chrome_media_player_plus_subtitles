@@ -1,0 +1,86 @@
+/* CSS Variables for customization */
+:root {
+  --subtitle-size: 100%;
+  --subtitle-bottom: 10%;
+}
+
+/* Enhanced subtitle styling in fullscreen */
+.video-fullscreen-mode video::cue {
+  font-size: calc(2.5vw * var(--subtitle-size) / 100) !important;
+  background-color: rgba(0, 0, 0, 0.8) !important;
+  color: white !important;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.9) !important;
+  line-height: 1.4 !important;
+  padding: 0.5em 1em !important;
+  border-radius: 4px !important;
+}
+
+/* Position subtitles */
+.video-fullscreen-mode video::cue {
+  bottom: var(--subtitle-bottom) !important;
+}
+
+/* Style for text tracks */
+.video-fullscreen-mode video::-webkit-media-text-track-container {
+  font-size: calc(2.5vw * var(--subtitle-size) / 100) !important;
+  bottom: var(--subtitle-bottom) !important;
+}
+
+.video-fullscreen-mode video::-webkit-media-text-track-display {
+  background-color: rgba(0, 0, 0, 0.8) !important;
+  color: white !important;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.9) !important;
+  padding: 0.5em 1em !important;
+  border-radius: 4px !important;
+}
+
+/* Notification style */
+.subtitle-notification {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.9);
+  color: white;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 16px;
+  z-index: 999999;
+  pointer-events: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+/* Enhance video controls visibility in fullscreen */
+.video-fullscreen-mode video::-webkit-media-controls {
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.video-fullscreen-mode video:hover::-webkit-media-controls {
+  opacity: 1;
+}
+
+/* Better subtitle readability for various subtitle formats */
+.video-fullscreen-mode .ytp-caption-segment,
+.video-fullscreen-mode .caption-window,
+.video-fullscreen-mode .captions-text {
+  font-size: calc(2.5vw * var(--subtitle-size) / 100) !important;
+  background-color: rgba(0, 0, 0, 0.8) !important;
+  color: white !important;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.9) !important;
+  padding: 0.5em 1em !important;
+  border-radius: 4px !important;
+}

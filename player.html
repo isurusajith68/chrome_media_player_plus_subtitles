@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Video Player</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+        :root {
+            --gap: 12px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            color: #111;
+            background: #0b0b0b;
+        }
+
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 14px;
+            color: #e5e7eb;
+            background: #111827;
+            border-bottom: 1px solid #1f2937;
+        }
+
+        header .actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        main {
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: var(--gap);
+            height: calc(100vh - 54px);
+            padding: var(--gap);
+            transition: grid-template-columns 0.3s;
+        }
+
+        main.sidebar-hidden {
+            grid-template-columns: 1fr;
+        }
+
+        aside {
+            transition: opacity 0.3s;
+        }
+
+        aside[hidden] {
+            display: none !important;
+        }
+
+        @media (max-width: 900px) {
+            main {
+                grid-template-columns: 1fr;
+                height: auto;
+            }
+        }
+
+        .player {
+            width: 100%;
+            height: 100%;
+            background: #000;
+            border-radius: 10px;
+            overflow: hidden;
+            display: grid;
+            place-items: center;
+        }
+
+        video {
+            width: 100%;
+            height: 100%;
+            background: #000;
+        }
+
+        aside {
+            background: #111827;
+            color: #e5e7eb;
+            border-radius: 10px;
+            padding: 12px;
+            overflow: auto;
+        }
+
+        h2 {
+            margin: 8px 0 12px;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            color: #cbd5e1;
+            margin-bottom: 6px;
+        }
+
+        input[type="file"],
+        input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            border-radius: 8px;
+            background: #0b1220;
+            border: 1px solid #1f2937;
+            color: #e5e7eb;
+        }
+
+        .row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        button {
+            padding: 9px 12px;
+            border-radius: 8px;
+            border: 1px solid #374151;
+            background: #1f2937;
+            color: #e5e7eb;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #273244;
+        }
+
+        .help {
+            font-size: 12px;
+            color: #94a3b8;
+            margin-top: 10px;
+        }
+
+        /* Cue styling in this player tab */
+        video::cue {
+            font-size: 18px;
+            background: rgba(0, 0, 0, .75);
+            color: #fff;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, .9);
+            line-height: 1.35;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div>Video Player</div>
+        <div class="actions">
+            <button id="openFullscreen">Fullscreen</button>
+            <button id="openPiP">PiP</button>
+            <button id="toggleSidebar" style="margin-left:12px;">Hide Sidebar</button>
+        </div>
+    </header>
+    <main id="main">
+        <section class="player">
+            <video id="player" controls playsinline crossorigin="anonymous"></video>
+        </section>
+        <aside id="sidebar">
+            <h2>Load media</h2>
+            <div class="control">
+                <label for="videoFile">Video file</label>
+                <input id="videoFile" type="file" accept="video/*" />
+            </div>
+            <div class="control" style="margin-top: 10px;">
+                <label for="videoUrl">Video URL (optional)</label>
+                <input id="videoUrl" type="text" placeholder="https://... (must be CORS-allowed)" />
+                <div style="margin-top: 6px;" class="row">
+                    <button id="loadVideoUrl">Load URL</button>
+                    <button id="clearVideo">Clear</button>
+                </div>
+            </div>
+
+            <h2 style="margin-top: 16px;">Subtitles</h2>
+            <div class="control">
+                <label for="subtitleFile">Subtitle file (.vtt or .srt)</label>
+                <input id="subtitleFile" type="file" accept=".vtt,.srt,.VTT,.SRT,text/vtt,text/plain" />
+            </div>
+            <div class="control" style="margin-top: 10px;">
+                <label for="subtitleUrl">Subtitle URL (optional)</label>
+                <input id="subtitleUrl" type="text" placeholder="https://... (VTT or SRT)" />
+                <div style="margin-top: 6px;" class="row">
+                    <button id="loadSubtitleUrl">Load URL</button>
+                    <button id="clearSubs">Clear</button>
+                </div>
+            </div>
+
+            <div style="margin-top: 16px;" class="row">
+                <button id="toggleSubs">Toggle Subtitles</button>
+                <button id="downloadVtt">Download VTT</button>
+            </div>
+
+            <div class="help">
+                Tips:
+                <ul>
+                    <li>Local files use temporary blob URLs.</li>
+                    <li>.srt files are automatically converted to WebVTT.</li>
+                    <li>PiP and Fullscreen work on the player above.</li>
+                </ul>
+            </div>
+        </aside>
+    </main>
+    <script src="player.js"></script>
+    <script>
+        // Robust sidebar hide/show logic, always after DOM is ready
+        document.addEventListener('DOMContentLoaded', function () {
+            const main = document.getElementById('main');
+            const sidebar = document.getElementById('sidebar');
+            const toggleSidebarBtn = document.getElementById('toggleSidebar');
+            let sidebarVisible = true;
+            function setSidebar(visible) {
+                sidebarVisible = visible;
+                if (!sidebarVisible) {
+                    main.classList.add('sidebar-hidden');
+                    sidebar.setAttribute('hidden', '');
+                    toggleSidebarBtn.textContent = 'Show Sidebar';
+                } else {
+                    main.classList.remove('sidebar-hidden');
+                    sidebar.removeAttribute('hidden');
+                    toggleSidebarBtn.textContent = 'Hide Sidebar';
+                }
+            }
+            toggleSidebarBtn.addEventListener('click', function () {
+                setSidebar(!sidebarVisible);
+            });
+            // On load, ensure correct state
+            setSidebar(true);
+        });
+    </script>
+</body>
+
+</html>
